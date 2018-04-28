@@ -1,0 +1,55 @@
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "web"
+  namespace: "default"
+  labels:
+    app: "web"
+spec:
+  # replicas: 1
+  selector:
+    matchLabels:
+      app: "web"
+  template:
+    metadata:
+      labels:
+        app: "web"
+    spec:
+      containers:
+      - name: "web"
+        image: "gcr.io/google-samples/hello-app:1.0"
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+      #   volumeMounts:
+      #     # name must match the volume name below
+      #     - name: my-pvc-nfs
+      #       mountPath: "/mnt"
+      # volumes:
+      # - name: my-pvc-nfs
+      #   persistentVolumeClaim:
+      #     claimName: nfs
+      #   volumeMounts:
+      #   - name: "global-disk"
+      #     mountPath: "/mnt/global/test"
+      # volumes:
+      # - name: "global-disk"
+      #   persistentVolumeClaim:
+      #     claimName: global-disk
+---
+# apiVersion: "autoscaling/v1"
+# kind: "HorizontalPodAutoscaler"
+# metadata:
+#   name: "flask-hpa"
+#   namespace: "default"
+#   labels:
+#     app: "web"
+# spec:
+#   scaleTargetRef:
+#     kind: "Deployment"
+#     name: "web"
+#     apiVersion: "apps/v1beta1"
+#   minReplicas: 1
+#   maxReplicas: 2
+#   targetCPUUtilizationPercentage: 80

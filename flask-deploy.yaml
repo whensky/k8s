@@ -1,0 +1,48 @@
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "flask"
+  namespace: "default"
+  labels:
+    app: "flask"
+spec:
+  # replicas: 3
+  selector:
+    matchLabels:
+      app: "flask"
+  template:
+    metadata:
+      labels:
+        app: "flask"
+    spec:
+      containers:
+      - name: "flask"
+        image: "gcr.io/{$project-id}/quickstart-image:tag2"
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+          # name must match the volume name below
+          - name: my-pvc-nfs
+            mountPath: "/mnt/disk"
+      volumes:
+      - name: my-pvc-nfs
+        persistentVolumeClaim:
+          claimName: nfs
+---
+# apiVersion: "autoscaling/v1"
+# kind: "HorizontalPodAutoscaler"
+# metadata:
+#   name: "flask-hpa"
+#   namespace: "default"
+#   labels:
+#     app: "flask"
+# spec:
+#   scaleTargetRef:
+#     kind: "Deployment"
+#     name: "flask"
+#     apiVersion: "apps/v1beta1"
+#   minReplicas: 1
+#   maxReplicas: 3
+#   targetCPUUtilizationPercentage: 80
